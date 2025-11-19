@@ -1,0 +1,102 @@
+/* style.css */
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: #f9f9f9;
+margin: 0;
+padding: 0;
+}
+
+header {
+background-color: #E60023;
+color: white;
+padding: 20px 10px;
+text-align: center;
+}
+
+header h1 {
+margin: 0;
+font-size: 2em;
+}
+
+header p {
+margin: 5px 0 0 0;
+font-size: 1em;
+}
+
+main {
+max-width: 900px;
+margin: 20px auto;
+padding: 0 20px;
+}
+
+.input-section {
+background-color: white;
+padding: 20px;
+margin-bottom: 30px;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+text-align: center;
+}
+
+.input-section input {
+padding: 10px;
+width: 60%;
+font-size: 1em;
+border-radius: 5px;
+border: 1px solid #ccc;
+}
+
+.input-section button {
+padding: 10px 15px;
+margin-left: 10px;
+background-color: #E60023;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+.input-section button:hover {
+background-color: #b3001a;
+}
+
+#predictionResult {
+margin-top: 15px;
+font-weight: bold;
+color: #333;
+}
+
+.table-section {
+background-color: white;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+th, td {
+padding: 10px 15px;
+border-bottom: 1px solid #ddd;
+text-align: left;
+}
+
+th {
+background-color: #E60023;
+color: white;
+}
+
+tr:hover {
+background-color: #f1f1f1;
+}
+
+footer {
+text-align: center;
+padding: 15px 0;
+margin-top: 30px;
+color: #555;
+font-size: 0.9em;
+}
