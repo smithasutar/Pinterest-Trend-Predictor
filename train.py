@@ -82,7 +82,8 @@ for epoch in range(epochs):
 # 4. Prediction function
 # ===============================
 def predict_next_week_score(trend_name, df, model, window_size=10):
-    row = df[df["Trend"].str.lower() == trend_name.lower()]
+    row = df[df["Trend"].str.lower().str.contains(trend_name.lower())]
+
     if row.empty:
         return None
     row = row.iloc[0]
@@ -113,6 +114,30 @@ def predict():
         return jsonify({"error": f"Trend '{trend}' not found"}), 404
 
     return jsonify({"predicted_score": float(score)})
+
+@app.route("/top_trends")
+def top_trends():
+    trends_with_scores = []
+
+    # Loop through ALL trends from the CSV
+    for _, row in df.iterrows():
+        trend_name = row["Trend"]
+
+        # Predict next week's score using your LSTM model
+        score = predict_next_week_score(trend_name, df, model)
+
+        if score is not None:
+            trends_with_scores.append({
+                "trend": trend_name,
+                "predicted_score": round(score)
+            })
+
+    # Sort by predicted score DESC
+    trends_with_scores.sort(key=lambda x: x["predicted_score"], reverse=True)
+
+    # Return top 3
+    return jsonify(trends_with_scores[:7])
+
 
 # Run Flask in a thread if this script is imported
 def run_app():

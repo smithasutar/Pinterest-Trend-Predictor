@@ -7,12 +7,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pinterest Trend Predictor</title>
+<title>Fashion Police</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Pinterest Trend Predictor</h1>
+        <h1>Fashion Police - Pinterest Trend Predictor</h1>
         <p>Enter a trend name to see next week's predicted popularity score</p>
     </header>
 
@@ -20,36 +20,21 @@
 <main>
     <!-- Input form -->
     <section class="input-section">
-        <input type="text" id="trendInput" placeholder="Enter trend name...">
+        <input type="text" id="trendInput" placeholder="Enter trend name..." onkeydown="checkEnter(event)">
         <button onclick="predictTrend()">Predict</button>
         <p id="predictionResult"></p>
     </section>
 
-    <!-- Trend table -->
-    <section class="table-section">
+   <section class="table-section">
         <h2>Recent Pinterest Trends</h2>
         <table id="trendTable">
             <thead>
                 <tr>
                     <th>Trend</th>
-                    <th>Score (Latest Week)</th>
+                    <th>Score</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Example rows; dynamically fill via backend -->
-                <tr>
-                    <td >Outfit Ideas</td>
-                    <td>79</td>
-                </tr>
-                <tr>
-                    <td>Last Minute Halloween Costumes</td>
-                    <td>17</td>
-                </tr>
-                <tr>
-                    <td>Cool Sunglasses</td>
-                    <td>92</td>
-                </tr>
-            </tbody>
+            <tbody id="trendTableBody"></tbody>
         </table>
     </section>
 </main>
@@ -59,6 +44,13 @@
 </footer>
 
 <script>
+
+function checkEnter(event) {
+    if (event.key === "Enter") {
+        predictTrend();
+    }
+}
+
 function predictTrend() {
     const trend = document.getElementById("trendInput").value;
     if (!trend) {
@@ -69,6 +61,12 @@ function predictTrend() {
     fetch("http://127.0.0.1:5000/predict?trend=" + encodeURIComponent(trend))
         .then(response => response.json())
         .then(data => {
+
+            if (data.error) {
+                document.getElementById("predictionResult").innerText = data.error;
+                return;
+            }
+
             document.getElementById("predictionResult").innerText = 
                 `The possibility of ${trend} trending next week is: ${data.predicted_score.toFixed(2)}%`;
         })
@@ -77,6 +75,31 @@ function predictTrend() {
             document.getElementById("predictionResult").innerText = "Error predicting trend.";
         });
 }
+
+// Load top 3 predicted trends into table
+function loadTopTrends() {
+    fetch("http://127.0.0.1:5000/top_trends")
+        .then(res => res.json())
+        .then(data => {
+
+            const tableBody = document.getElementById("trendTableBody");
+            tableBody.innerHTML = ""; // clear previous rows
+
+            data.forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.trend}</td>
+                        <td>${item.predicted_score}%</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        })
+        .catch(err => console.error(err));
+}
+
+loadTopTrends();
+
 </script>
 
 
@@ -87,104 +110,105 @@ function predictTrend() {
 <style>
 /* style.css */
 body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background-color: #f9f9f9;
-margin: 0;
-padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
 }
 
 header {
-background-color: #E60023;
-color: white;
-padding: 20px 10px;
-text-align: center;
+    background-color: #E60023;
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
 }
 
 header h1 {
-margin: 0;
-font-size: 2em;
+    margin: 0;
+    font-size: 2em;
 }
 
 header p {
-margin: 5px 0 0 0;
-font-size: 1em;
+    margin: 5px 0 0 0;
+    font-size: 1em;
 }
 
 main {
-max-width: 900px;
-margin: 20px auto;
-padding: 0 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
 }
 
 .input-section {
-background-color: white;
-padding: 20px;
-margin-bottom: 30px;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-text-align: center;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 .input-section input {
-padding: 10px;
-width: 60%;
-font-size: 1em;
-border-radius: 5px;
-border: 1px solid #ccc;
+    padding: 10px;
+    width: 60%;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 .input-section button {
-padding: 10px 15px;
-margin-left: 10px;
-background-color: #E60023;
-color: white;
-border: none;
-border-radius: 5px;
-cursor: pointer;
+    padding: 10px 15px;
+    margin-left: 10px;
+    background-color: #E60023;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .input-section button:hover {
-background-color: #b3001a;
+    background-color: #b3001a;
 }
 
 #predictionResult {
-margin-top: 15px;
-font-weight: bold;
-color: #333;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #333;
 }
 
 .table-section {
-background-color: white;
-padding: 20px;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 table {
-width: 100%;
-border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th, td {
-padding: 10px 15px;
-border-bottom: 1px solid #ddd;
-text-align: left;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
 }
 
 th {
-background-color: #E60023;
-color: white;
+    background-color: #E60023;
+    color: white;
 }
 
 tr:hover {
-background-color: #f1f1f1;
+    background-color: #f1f1f1;
 }
 
 footer {
-text-align: center;
-padding: 15px 0;
-margin-top: 30px;
-color: #555;
-font-size: 0.9em;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+    color: #555;
+    font-size: 0.9em;
 }
 </style>
