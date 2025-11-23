@@ -8,6 +8,13 @@ from sklearn.preprocessing import MinMaxScaler
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+from flask import Flask, jsonify
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return jsonify({"message": "Backend is running!"})
+
 # ===============================
 # 1. Load and preprocess data
 # ===============================
