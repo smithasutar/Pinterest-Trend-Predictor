@@ -58,7 +58,7 @@ function predictTrend() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/predict?trend=" + encodeURIComponent(trend))
+    fetch(`https://pinterest-trend-predictor.onrender.com/predict?trend=${encodeURIComponent(trend)}`)
         .then(response => response.json())
         .then(data => {
 
@@ -76,9 +76,10 @@ function predictTrend() {
         });
 }
 
+
 // Load top 3 predicted trends into table
 function loadTopTrends() {
-    fetch("http://127.0.0.1:5000/top_trends")
+    fetch("https://pinterest-trend-predictor.onrender.com/top_trends")
         .then(res => res.json())
         .then(data => {
 

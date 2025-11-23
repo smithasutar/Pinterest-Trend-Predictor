@@ -7,12 +7,6 @@ from sklearn.preprocessing import MinMaxScaler
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from flask import Flask, jsonify
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return jsonify({"message": "Backend is running!"})
 
 # ===============================
 # 1. Load and preprocess data
@@ -124,25 +118,17 @@ def predict():
 @app.route("/top_trends")
 def top_trends():
     trends_with_scores = []
-
-    # Loop through ALL trends from the CSV
     for _, row in df.iterrows():
         trend_name = row["Trend"]
-
-        # Predict next week's score using your LSTM model
         score = predict_next_week_score(trend_name, df, model)
-
         if score is not None:
             trends_with_scores.append({
                 "trend": trend_name,
                 "predicted_score": round(score)
             })
-
-    # Sort by predicted score DESC
     trends_with_scores.sort(key=lambda x: x["predicted_score"], reverse=True)
-
-    # Return top 3
     return jsonify(trends_with_scores[:7])
+
 
 
 # Run Flask in a thread if this script is imported
