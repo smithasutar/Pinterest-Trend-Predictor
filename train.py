@@ -118,17 +118,25 @@ def predict():
 @app.route("/top_trends")
 def top_trends():
     trends_with_scores = []
+
+    # Loop through ALL trends from the CSV
     for _, row in df.iterrows():
         trend_name = row["Trend"]
+
+        # Predict next week's score using your LSTM model
         score = predict_next_week_score(trend_name, df, model)
+
         if score is not None:
             trends_with_scores.append({
                 "trend": trend_name,
                 "predicted_score": round(score)
             })
-    trends_with_scores.sort(key=lambda x: x["predicted_score"], reverse=True)
-    return jsonify(trends_with_scores[:7])
 
+    # Sort by predicted score DESC
+    trends_with_scores.sort(key=lambda x: x["predicted_score"], reverse=True)
+
+    # Return top 3
+    return jsonify(trends_with_scores[:7])
 
 
 # Run Flask in a thread if this script is imported
@@ -137,3 +145,16 @@ def run_app():
 
 if __name__ == "__main__":
     run_app()
+
+
+
+
+
+
+
+
+
+
+
+
+
