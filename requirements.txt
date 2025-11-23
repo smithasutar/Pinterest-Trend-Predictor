@@ -1,6 +1,7 @@
 Flask
-gunicorn
+flask-cors
 pandas
 numpy
+torch
 scikit-learn
-flask-cors
+gunicorn
